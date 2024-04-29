@@ -49,9 +49,10 @@ db.Sequelize = Sequelize;
 
 db.Doctor = require('./Doctor')(sequelize,Sequelize)
 db.User = require('./user.js')(sequelize,Sequelize)
+db.Rating = require('./Rating.js')(sequelize,Sequelize)
 
-db.User.belongsTo(db.Doctor,{
-  foreignKey : 'id',
+db.User.hasOne(db.Doctor,{
+  foreignKey : 'user_id',
   as : 'doctor',
   sourceKey : 'id'
 })
@@ -61,5 +62,16 @@ db.Doctor.belongsTo(db.User,{
   targetKey : 'id'
 })
 
+db.Doctor.hasMany(db.Rating,{
+  foreignKey : 'doctor_id',
+  as : 'ratings',
+  sourceKey : 'id'
+})
+
+db.Rating.belongsTo(db.Doctor,{
+  foreignKey : 'doctor_id',
+  as :'doctor',
+  targetKey : 'id'
+})
 
 module.exports = db;

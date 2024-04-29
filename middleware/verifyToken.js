@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const {User} = require('../models');
 
 const verifyToken = async (req, res, next) => {
     try {
@@ -31,6 +32,7 @@ const verifyToken = async (req, res, next) => {
 const veryfiPasien = async (req,res,next) => {
     try{
         const token = req.header('Authorization');
+        console.log(token);
         if(!token){
             res.status(401).json({
                 status : 'error',
@@ -49,7 +51,7 @@ const veryfiPasien = async (req,res,next) => {
 
         }
 
-        const user = await user.findByPk(verified.id)
+        const user = await User.findByPk(verified.id)
         if(user.role !== 'pasien'){
             return res.status(401).json({
                 status : 'error',
@@ -87,7 +89,7 @@ const veryfiDoctor = async (req,res,next) => {
 
         }
 
-        const user = await user.findByPk(verified.id)
+        const user = await User.findByPk(verified.id)
         if(user.role !== 'doctor'){
             return res.status(401).json({
                 status : 'error',
