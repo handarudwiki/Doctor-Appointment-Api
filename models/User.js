@@ -1,3 +1,6 @@
+const { FOREIGNKEYS } = require("sequelize/lib/query-types");
+const Doctor = require("./Doctor");
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
@@ -38,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     },
     {
+        sequelize,
         tableName: 'users',
         timestamps: true 
     });

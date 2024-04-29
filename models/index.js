@@ -47,4 +47,19 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.Doctor = require('./Doctor')(sequelize,Sequelize)
+db.User = require('./user.js')(sequelize,Sequelize)
+
+db.User.belongsTo(db.Doctor,{
+  foreignKey : 'id',
+  as : 'doctor',
+  sourceKey : 'id'
+})
+db.Doctor.belongsTo(db.User,{
+  foreignKey : 'user_id',
+  as : 'user',
+  targetKey : 'id'
+})
+
+
 module.exports = db;
