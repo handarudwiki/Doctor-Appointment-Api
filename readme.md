@@ -15,5 +15,5 @@ npx prisma migrate dev
 Run Seeder
 
 ```bash
-node ./seeders/user_seeder.js
+node ./seeders
 ```
