@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         role: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM('doctor', 'patient'),
             allowNull: false,
         },
         createdAt: { // Nama kolom di dalam tabel
@@ -37,10 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'updated_at'
         },
     },
-    {
-        tableName: 'users',
-        timestamps: true 
-    });
+        {
+            tableName: 'users',
+            timestamps: true
+        });
 
     return User;
 }

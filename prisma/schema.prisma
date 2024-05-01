@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  doctor
+  patient
+}
+
+enum Status {
+  ongoing
+  done
+  cancel
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  role         Role          @default(patient)
+  no_hp        String        @unique
+  Doctor       Doctor?
+  appointments Appointment[]
+  chat         Chat[]
+  ChatMessage  ChatMessage[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  @@map("users")
+}
+
+model Doctor {
+  id            Int           @id @default(autoincrement())
+  categori      String
+  description   String
+  price         Int
+  hospital_name String
+  photo_profile String
+  experience    String
+  user_id       Int           @unique
+  // rating Rating[] --> On going
+  appointments  Appointment[]
+  chat          Chat[]
+  user          User          @relation(fields: [user_id], references: [id])
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+
+  @@map("doctors")
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  time       DateTime @db.Time()
+  patient_id Int
+  doctor_id  Int
+  status     Status   @default(ongoing)
+  patient    User     @relation(fields: [patient_id], references: [id])
+  doctor     Doctor   @relation(fields: [doctor_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("appointments")
+}
+
+model Chat {
+  id         Int           @id @default(autoincrement())
+  patient_id Int
+  doctor_id  Int
+  patient    User          @relation(fields: [patient_id], references: [id])
+  doctor     Doctor        @relation(fields: [doctor_id], references: [id])
+  chat       ChatMessage[]
+
+  @@map("chats")
+}
+
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  chat_id    Int
+  sender_id  Int
+  message    String
+  chat       Chat     @relation(fields: [chat_id], references: [id])
+  sender     User     @relation(fields: [sender_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("chat_messages")
+}
