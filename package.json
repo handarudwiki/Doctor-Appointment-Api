@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@prisma/client": "^5.13.0",
     "bcrypt": "^5.1.1",
     "cli": "^1.0.1",
     "cookie-parser": "~1.4.4",
@@ -21,5 +22,9 @@
     "nodemon": "^3.1.0",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "prisma": "^5.13.0"
   }
 }

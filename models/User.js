@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         role: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM('doctor', 'patient'),
             allowNull: false,
         },
         createdAt: { // Nama kolom di dalam tabel
