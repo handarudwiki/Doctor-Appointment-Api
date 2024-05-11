@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt")
 const prisma = new PrismaClient()
 
 const main = async () => {
+    const gender = ["pria", "wanita"]
+
     for (let i = 0; i < 10; i++) {
         await prisma.user.create({
             data: {
@@ -15,6 +17,8 @@ const main = async () => {
                 no_hp: faker.phone.number(),
                 created_at: new Date(),
                 updated_at: new Date(),
+                age: 20,
+                gender: gender[i % 2]
             },
         })
     }

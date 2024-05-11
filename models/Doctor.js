@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey : true,
         allowNull : false,
     },
-    category : {
+    categori : {
         type : DataTypes.STRING,
         allowNull : false,
     },

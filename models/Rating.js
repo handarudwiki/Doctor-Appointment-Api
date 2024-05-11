@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes)=>{
             primaryKey : true,
             allowNull : false
         },
+        user_id : {
+            type : DataTypes.INTEGER,
+            allowNull : false
+        },
         doctor_id : {
             type : DataTypes.INTEGER,
             allowNull : false,

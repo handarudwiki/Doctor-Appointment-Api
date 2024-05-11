@@ -25,9 +25,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        age : {
+            type : DataTypes.INTEGER,
+            allowNull : false
+        },
+        gender : {
+            type :DataTypes.ENUM('pria','wanita'),
+            allowNull : false
+        },
         role: {
             type: DataTypes.ENUM('doctor', 'patient'),
-            allowNull: false,
+            allowNull: true,
         },
         createdAt: { // Nama kolom di dalam tabel
             type: DataTypes.DATE,

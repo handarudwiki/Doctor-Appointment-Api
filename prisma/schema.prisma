@@ -24,6 +24,11 @@ enum Status {
   cancel
 }
 
+enum Gender {
+  pria
+  wanita
+}
+
 model User {
   id           Int           @id @default(autoincrement())
   name         String
@@ -31,10 +36,13 @@ model User {
   password     String
   role         Role          @default(patient)
   no_hp        String        @unique
+  gender Gender
+  age Int
   Doctor       Doctor?
   appointments Appointment[]
   chat         Chat[]
   ChatMessage  ChatMessage[]
+  rating Rating[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
 
@@ -53,6 +61,7 @@ model Doctor {
   // rating Rating[] --> On going
   appointments  Appointment[]
   chat          Chat[]
+  rating  Rating[]
   user          User          @relation(fields: [user_id], references: [id])
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
@@ -97,4 +106,16 @@ model ChatMessage {
   updated_at DateTime @updatedAt
 
   @@map("chat_messages")
+}
+
+model Rating {
+  id Int @id @default(autoincrement())
+  user_id Int
+  doctor_id Int
+  rating Int
+  doctor Doctor @relation(fields: [doctor_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  @@map("ratings")
 }

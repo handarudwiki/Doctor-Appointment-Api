@@ -51,6 +51,13 @@ db.Doctor = require('./Doctor')(sequelize,Sequelize)
 db.User = require('./user.js')(sequelize,Sequelize)
 db.Rating = require('./Rating.js')(sequelize,Sequelize)
 
+db.User.hasMany(db.Rating,{
+  foreignKey : 'user_id',
+  as : 'rating',
+  sourceKey :'id'
+})
+
+
 db.User.hasOne(db.Doctor,{
   foreignKey : 'user_id',
   as : 'doctor',
