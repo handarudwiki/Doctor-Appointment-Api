@@ -1,3 +1,6 @@
+const { FOREIGNKEYS } = require("sequelize/lib/query-types");
+const Doctor = require("./Doctor");
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
@@ -22,9 +25,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        age : {
+            type : DataTypes.INTEGER,
+            allowNull : false
+        },
+        gender : {
+            type :DataTypes.ENUM('pria','wanita'),
+            allowNull : false
+        },
         role: {
             type: DataTypes.ENUM('doctor', 'patient'),
-            allowNull: false,
+            allowNull: true,
         },
         createdAt: { // Nama kolom di dalam tabel
             type: DataTypes.DATE,
@@ -37,10 +48,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'updated_at'
         },
     },
-        {
-            tableName: 'users',
-            timestamps: true
-        });
+    {
+        sequelize,
+        tableName: 'users',
+        timestamps: true 
+    });
 
     return User;
 }

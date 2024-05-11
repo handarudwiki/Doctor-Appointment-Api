@@ -7,7 +7,7 @@ const main = async () => {
     const doctor = await prisma.doctor.findMany({ select: { id: true } })
     const patient = await prisma.user.findMany({ where: { role: "patient" }, select: { id: true } })
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         await prisma.appointment.create({
             data: {
                 date: new Date(),

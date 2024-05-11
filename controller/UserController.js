@@ -1,21 +1,25 @@
 const bcrypt = require('bcrypt');
-const validator = require('fastest-validator');
 const {User} = require('../models');
 const jwt = require('jsonwebtoken');
 const { where } = require('sequelize');
-const v = new validator();
+const Joi = require('joi')
+const validator = require('fastest-validator')
+const v = new validator()
+
 
 
 const register = async (req, res) => {
     try {
         const schema = {
-            name : 'string|empty:false',
             email : 'email|empty:false',
-            password :'string|empty:false',
-            no_hp :'string|empty:false'
+            password : 'string|empty:false',
+            name : 'string|empty:false',
+            no_hp : 'string|empty:false',
+            gender : 'string|empty:false',
+            age : 'number|empty:false'
         }
 
-        const validated = v.validate(req.body, schema);
+        const validated = v.validate(req.body, schema)
 
         if(validated.length){
             return res.status(400).json({
@@ -25,37 +29,40 @@ const register = async (req, res) => {
         }
 
         const user = await User.findOne({
-            where: {
-                email : req.body.email,
-            }
+            where : {email : req.body.email}
         })
 
         if(user){
-            return res.status(409).json({
+            return res.status(401).json({
                 status : 'error',
-                message : 'user already exists'
+                message : 'user already exist'
             })
         }
 
-        req.body.password = await bcrypt.hash(req.body.password, 10)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
         const savedUser = await User.create({
-            email : req.body.email,
-            password : req.body.password,
             name : req.body.name,
+            email : req.body.email,
+            password : hashedPassword,
             no_hp : req.body.no_hp,
-            role :'pasien'
+            gender : req.body.gender,
+            age : req.body.age,
         })
+
         return res.status(200).json({
-            status : 'success',
-            data : {
-                id : savedUser.id,
-                name :savedUser.name,
-                email : savedUser.email,
-                no_hp : savedUser.no_hp,
-            }
+          status : 'success',
+          data: {
+            name : savedUser.name,
+            email : savedUser.email,
+            no_hp : savedUser.no_h,
+            gender : savedUser.gender,
+            age : savedUser.age,
+            role : savedUser.role
+          }
         })
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             status : 'error',
             message : error.message
         })
@@ -99,6 +106,7 @@ const login = async(req, res) => {
         }
 
         const token = jwt.sign({id: user.id},'passwordKey')
+
         return res.status(200).json({
             token : token
         })
