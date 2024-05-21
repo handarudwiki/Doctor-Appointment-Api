@@ -58,7 +58,7 @@ const veryfiPasien = async (req,res,next) => {
                 message : "Only pasien can access"
             })
         }
-        req.user = verified.id;
+        req.user = user.id;
         next();
     }catch(err){
         return res.status(500).json({
@@ -84,7 +84,7 @@ const veryfiDoctor = async (req,res,next) => {
         .status(401)
         .json({ 
             status :'error', 
-        message: "Token verification failed, authorization denied." 
+         message: "Token verification failed, authorization denied." 
         });
 
         }
@@ -96,7 +96,7 @@ const veryfiDoctor = async (req,res,next) => {
                 message : "Only doctor can access"
             })
         }
-        req.user = verified.id;
+        req.user = user.id;
         next();
     }catch(err){
         return res.status(500).json({

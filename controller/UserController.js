@@ -3,8 +3,11 @@ const {User} = require('../models');
 const jwt = require('jsonwebtoken');
 const { where } = require('sequelize');
 const Joi = require('joi')
-const validator = require('fastest-validator')
+const validator = require('fastest-validator');
+const user = require('../models/user');
 const v = new validator()
+const { PrismaClient } = require("@prisma/client")
+const prisma = new PrismaClient()
 
 
 
@@ -184,4 +187,26 @@ const update = async(req, res) => {
     }
 }
 
-module.exports = {register, login, update}
+const detailUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user)
+        if (!user) {
+            return res.status(404).json({
+                status : 'error',
+                message : 'User not found'
+            })
+        }
+
+        return res.status(200).json({
+            status : 'success',
+            data : user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status : 'error',
+            message : error.message
+        })
+    }
+}
+
+module.exports = {register, login, update, detailUser}
