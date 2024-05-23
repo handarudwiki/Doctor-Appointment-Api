@@ -21,7 +21,8 @@ const createRating = async (req, res)=>{
 
         const {doctor_id, rating} = req.body;
 
-        
+        console.log(doctor_id)
+        console.log("1")
         const savedRating = await Rating.create({
             doctor_id:doctor_id,
             rating: rating,
