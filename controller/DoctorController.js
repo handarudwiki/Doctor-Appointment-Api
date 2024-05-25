@@ -101,7 +101,7 @@ const getDoctorByCategory = async (req, res) => {
         appointments: true,
       },
     })
-    if (!doctor) {
+    if (doctor.length <= 0) {
       return res.status(404).json({
         status: "error",
         message: "Dokter di kategori ini tidak ditemukan",
