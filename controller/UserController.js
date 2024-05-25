@@ -36,7 +36,7 @@ const register = async (req, res) => {
     if (user) {
       return res.status(401).json({
         status: "error",
-        message: "user already exist",
+        message: "User dengan email tersebut sudah terdaftar",
       })
     }
 
@@ -53,14 +53,7 @@ const register = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      data: {
-        name: savedUser.name,
-        email: savedUser.email,
-        no_hp: savedUser.no_h,
-        gender: savedUser.gender,
-        age: savedUser.age,
-        role: savedUser.role,
-      },
+      data: savedUser,
     })
   } catch (error) {
     return res.status(500).json({
@@ -93,7 +86,7 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         status: "error",
-        message: "Email or password is incorrect",
+        message: "Email/password yang anda masukkan salah",
       })
     }
 
@@ -105,7 +98,7 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         status: "error",
-        message: "Email or password is incorrect",
+        message: "Email/password yang anda masukkan salah",
       })
     }
 
