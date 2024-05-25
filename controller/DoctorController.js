@@ -63,7 +63,7 @@ const getDoctorById = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({
         status: "error",
-        message: "doctor not found",
+        message: "Dokter tidak ditemukan",
       })
     }
     const ratings = await Rating.findAll({
