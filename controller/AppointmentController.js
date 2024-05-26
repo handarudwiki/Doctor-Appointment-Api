@@ -38,13 +38,13 @@ const AppointmentController = {
             : appointment.date.getMonth()
         }-${appointment.date.getFullYear()}`,
         time: `${
-          appointment.time.getHours() < 10
-            ? "0" + appointment.time.getHours()
-            : appointment.time.getHours()
+          appointment.time.getUTCHours() < 10
+            ? "0" + appointment.time.getUTCHours()
+            : appointment.time.getUTCHours()
         }:${
-          appointment.time.getMinutes() < 10
-            ? "0" + appointment.time.getMinutes()
-            : appointment.time.getMinutes()
+          appointment.time.getUTCMinutes() < 10
+            ? "0" + appointment.time.getUTCMinutes()
+            : appointment.time.getUTCMinutes()
         }`,
       }))
 
