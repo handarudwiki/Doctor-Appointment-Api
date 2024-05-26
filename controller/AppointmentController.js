@@ -26,7 +26,7 @@ const AppointmentController = {
         data: apppointment,
       })
     } catch (error) {
-      req.status(500).json({
+      res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })
