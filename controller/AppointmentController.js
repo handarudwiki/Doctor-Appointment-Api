@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client")
+const { parseISO, formatISO } = require("date-fns")
 const prisma = new PrismaClient()
 
 const AppointmentController = {
@@ -95,17 +96,25 @@ const AppointmentController = {
 
   addAppointment: async (req, res) => {
     try {
-      const appointment = await prisma.appointment.create({
-        data: {
-          patient_id: parseInt(req.body.patient_id),
-          doctor_id: parseInt(req.body.doctor_id),
-          date: new Date(req.body.date),
-          time: new Date(req.body.time),
-        },
-      })
+      const patientId = parseInt(req.body.patient_id)
+      const doctorId = parseInt(req.body.doctor_id)
+      const date = req.body.date
+      const time = req.body.time
+
+      const appointment = await prisma.$queryRaw`
+      INSERT INTO appointments (patient_id, doctor_id, date, time, updated_at)
+      VALUES (${patientId}, ${doctorId}, STR_TO_DATE(${date}, '%d-%m-%Y'), STR_TO_DATE(${time},'%H:%i:%s'), SYSDATE())
+    `
+
       res.status(201).json({
         message: "Add appointment succesfully",
-        data: appointment,
+        data: {
+          patient_id: patientId,
+          doctor_id: doctorId,
+          date: date,
+          time: time,
+          status: "on going",
+        },
       })
     } catch (error) {
       res.status(500).json({
