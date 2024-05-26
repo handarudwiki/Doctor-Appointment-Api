@@ -11,7 +11,12 @@ const AppointmentController = {
           patient_id: parseInt(id),
         },
         include: {
-          doctor: true,
+          doctor: {
+            include: {
+              user: true,
+              rating: true,
+            },
+          },
           patient: true,
         },
       })
