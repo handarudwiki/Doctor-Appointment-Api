@@ -26,9 +26,31 @@ const AppointmentController = {
           data: [],
         })
       }
+      const formattedAppointments = apppointment.map((appointment) => ({
+        ...appointment,
+        date: `${
+          appointment.date.getDate() < 10
+            ? "0" + appointment.date.getDate()
+            : appointment.date.getDate()
+        }-${
+          appointment.date.getMonth() < 10
+            ? "0" + appointment.date.getMonth()
+            : appointment.date.getMonth()
+        }-${appointment.date.getFullYear()}`,
+        time: `${
+          appointment.time.getHours() < 10
+            ? "0" + appointment.time.getHours()
+            : appointment.time.getHours()
+        }:${
+          appointment.time.getMinutes() < 10
+            ? "0" + appointment.time.getMinutes()
+            : appointment.time.getMinutes()
+        }`,
+      }))
+
       res.status(200).json({
         message: "Get appointment patient succesfully",
-        data: apppointment,
+        data: formattedAppointments,
       })
     } catch (error) {
       res.status(500).json({
