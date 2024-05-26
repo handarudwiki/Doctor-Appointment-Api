@@ -15,7 +15,7 @@ const AppointmentController = {
           patient: true,
         },
       })
-      if (apppointment.length === 0) {
+      if (!apppointment) {
         res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
@@ -45,7 +45,7 @@ const AppointmentController = {
           patient: true,
         },
       })
-      if (appointment.length === 0) {
+      if (!appointment) {
         res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
