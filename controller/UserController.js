@@ -136,7 +136,6 @@ const update = async(req, res) => {
         const schema = {
             name : 'string|empty:false',
             email : 'email|empty:false',
-            password :'string|empty:false',
             no_hp :'string|empty:false'
         }
         
@@ -209,4 +208,33 @@ const detailUser = async (req, res) => {
     }
 }
 
-module.exports = {register, login, update, detailUser}
+const updatePassword=  async (req, res)=>{
+    try {
+        const user = await User.findByPk(req.user)
+        if (!user) {
+            return res.status(404).json({
+                status : 'error',
+                message : 'User not found'
+            })
+        }
+
+        console.log(user)
+        console.log(req.body.password)
+        hashedPassword = await bcrypt.hash(req.body.password,10)
+        await user.update({
+            password : hashedPassword,
+        })
+        console.log(user)
+        return res.status(200).json({
+            status : 'success',
+            message : "updated password successfully" 
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status : "error",
+            message : error.message
+        })
+    }
+}
+
+module.exports = {register, login, update, detailUser, updatePassword}
