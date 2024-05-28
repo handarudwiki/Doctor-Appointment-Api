@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client")
-const { parseISO, formatISO } = require("date-fns")
 const prisma = new PrismaClient()
 
 const AppointmentController = {
@@ -20,8 +19,9 @@ const AppointmentController = {
           patient: true,
         },
       })
-      if (!apppointment) {
-        res.status(404).json({
+
+      if (apppointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
         })
@@ -68,19 +68,48 @@ const AppointmentController = {
           doctor_id: parseInt(id),
         },
         include: {
-          doctor: true,
+          doctor: {
+            include: {
+              user: true,
+              rating: true,
+            },
+          },
           patient: true,
         },
       })
-      if (!appointment) {
-        res.status(404).json({
+
+      if (appointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
         })
       }
+
+      const formattedAppointments = appointment.map((appointment) => ({
+        ...appointment,
+        date: `${
+          appointment.date.getDate() < 10
+            ? "0" + appointment.date.getDate()
+            : appointment.date.getDate()
+        }-${
+          appointment.date.getMonth() < 10
+            ? "0" + appointment.date.getMonth()
+            : appointment.date.getMonth()
+        }-${appointment.date.getFullYear()}`,
+        time: `${
+          appointment.time.getUTCHours() < 10
+            ? "0" + appointment.time.getUTCHours()
+            : appointment.time.getUTCHours()
+        }:${
+          appointment.time.getUTCMinutes() < 10
+            ? "0" + appointment.time.getUTCMinutes()
+            : appointment.time.getUTCMinutes()
+        }`,
+      }))
+
       res.status(200).json({
         message: "Get appointment doctor succesfully",
-        data: appointment,
+        data: formattedAppointments,
       })
     } catch (error) {
       res.status(500).json({
@@ -103,8 +132,8 @@ const AppointmentController = {
         },
       })
 
-      if (appointment == null) {
-        res.status(404).json({
+      if (appointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
         })
       }
