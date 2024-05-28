@@ -92,8 +92,9 @@ const getDoctorById = async (req, res) => {
 
 const getDoctorByCategory = async (req, res) => {
   try {
+    console.log('trash')
     const category = req.params.category.toLowerCase()
-    const doctor = await prisma.doctor.findMany({
+    const doctors = await prisma.doctor.findMany({
       where: { categori: category },
       include: {
         rating: true,
@@ -101,15 +102,30 @@ const getDoctorByCategory = async (req, res) => {
         appointments: true,
       },
     })
-    if (doctor.length <= 0) {
+    if (doctors.length <= 0) {
       return res.status(404).json({
         status: "error",
         message: "Dokter di kategori ini tidak ditemukan",
       })
     }
+
+    for (let i = 0; i < doctors.length; i++) {
+      if (doctors[i].rating.length > 0) {
+        let totalRating = 0
+        for (let j = 0; j < doctors[i].rating.length; j++) {
+          totalRating += doctors[i].rating[j].rating
+        }
+        doctors[i].averageRatting = totalRating / doctors[i].rating.length
+        doctors[i].countRating = doctors[i].rating.length
+      } else {
+        doctors[i].averageRatting = 0
+        doctors[i].countRating = 0
+      }
+    }
+
     return res.status(200).json({
       status: "success",
-      data: doctor,
+      data: doctors,
     })
   } catch (error) {
     return res.status(500).json({
