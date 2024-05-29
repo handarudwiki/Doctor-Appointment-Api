@@ -100,6 +100,7 @@ model ChatMessage {
   chat_id    Int
   sender_id  Int
   message    String
+  isRead     Boolean  @default(false)
   chat       Chat     @relation(fields: [chat_id], references: [id])
   sender     User     @relation(fields: [sender_id], references: [id])
   created_at DateTime @default(now())
