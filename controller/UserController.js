@@ -117,51 +117,58 @@ const login = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const id = req.user
-    const user = await User.findByPk(id)
+    const id = req.user;
+    const user = await User.findByPk(id);
 
     if (!user) {
       return res.status(404).json({
         status: "error",
         message: "User not found",
-      })
+      });
     }
 
     const schema = {
       name: "string|empty:false",
       email: "email|empty:false",
       no_hp: "string|empty:false",
-    }
+      password: "string|optional",
+      age: "number|optional",
+    };
 
-    const validated = v.validate(req.body, schema)
+    const validated = v.validate(req.body, schema);
 
     if (validated.length) {
       return res.status(400).json({
         status: "error",
         message: validated,
-      })
+      });
     }
 
-    const email = req.body.email
-    if (email) {
-      const checkEmail = User.findOne({
+   
+    const email = req.body.email;
+    if (email && email !== user.email) {
+      const checkEmail = await User.findOne({
         where: { email: email },
-      })
+      });
 
-      if (checkEmail && email !== user.email) {
+      if (checkEmail) {
         return res.status(409).json({
-          satus: "error",
+          status: "error",
           message: "Email already exists",
-        })
+        });
       }
     }
 
+    // return res.json(req.user)
+    
     const updatedUser = await user.update({
       email: req.body.email,
       password: req.body.password,
       no_hp: req.body.no_hp,
       name: req.body.name,
-    })
+      age: req.body.age,
+    });
+
 
     return res.status(200).json({
       status: "success",
@@ -170,15 +177,17 @@ const update = async (req, res) => {
         email: updatedUser.email,
         no_hp: updatedUser.no_hp,
         name: updatedUser.name,
+        age: updatedUser.age,
       },
-    })
+    });
   } catch (error) {
     return res.status(500).json({
       status: "error",
       message: error.message,
-    })
+    });
   }
-}
+};
+
 
 const detailUser = async (req, res) => {
   try {
