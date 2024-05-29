@@ -1,13 +1,14 @@
 const express = require("express")
 const router = express.Router()
 const AppointmentController = require("../controller/AppointmentController")
+const { verifyToken } = require("../middleware/verifyToken")
 
-router.get("/patient/:id", AppointmentController.getAppointmentPatient)
-router.get("/doctor/:id", AppointmentController.getAppointmentDoctor)
+router.get("/patient", verifyToken, AppointmentController.getAppointmentPatient)
+router.get("/doctor", verifyToken, AppointmentController.getAppointmentDoctor)
 router
   .route("/:id")
-  .get(AppointmentController.getDetailAppointmet)
-  .put(AppointmentController.updateAppointment)
-router.route("/").post(AppointmentController.addAppointment)
+  .get(verifyToken, AppointmentController.getDetailAppointmet)
+  .put(verifyToken, AppointmentController.updateAppointment)
+router.route("/").post(verifyToken, AppointmentController.addAppointment)
 
 module.exports = router

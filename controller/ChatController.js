@@ -3,49 +3,12 @@ const { tr } = require("date-fns/locale")
 const prisma = new PrismaClient()
 
 const ChatController = {
-  getPatientChat: async (req, res) => {
+  getChat: async (req, res) => {
     const { id } = req.params
     try {
       const chat = await prisma.chat.findMany({
         where: {
-          patient_id: parseInt(id),
-        },
-        include: {
-          patient: true,
-          doctor: {
-            include: {
-              user: true,
-            },
-          },
-          chat: true,
-        },
-      })
-
-      if (chat.length == 0) {
-        return res.status(404).json({
-          message: "Data chat tidak ditemukan",
-          data: [],
-        })
-      }
-
-      res.status(200).json({
-        message: "Get chat user succesfully",
-        data: chat,
-      })
-    } catch (error) {
-      res.status(500).json({
-        message: "Terjadi kesalahan error",
-        error: error.message,
-      })
-    }
-  },
-
-  getChatDoctor: async (req, res) => {
-    try {
-      const { id } = req.params
-      const chat = await prisma.chat.findMany({
-        where: {
-          doctor_id: parseInt(id),
+          OR: [{ doctor_id: parseInt(id) }, { patient_id: parseInt(id) }],
         },
         include: {
           patient: true,

@@ -3,11 +3,10 @@ const prisma = new PrismaClient()
 
 const AppointmentController = {
   getAppointmentPatient: async (req, res) => {
-    const { id } = req.params
     try {
       const apppointment = await prisma.appointment.findMany({
         where: {
-          patient_id: parseInt(id),
+          patient_id: req.user,
         },
         include: {
           doctor: {
@@ -62,10 +61,10 @@ const AppointmentController = {
 
   getAppointmentDoctor: async (req, res) => {
     try {
-      const { id } = req.params
+      const id = req.user
       const appointment = await prisma.appointment.findMany({
         where: {
-          doctor_id: parseInt(id),
+          doctor_id: req.user,
         },
         include: {
           doctor: {
