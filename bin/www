@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 
+const { se } = require("date-fns/locale")
 var app = require("../app")
 var debug = require("debug")("doctor-appointment-api:server")
 var http = require("http")
@@ -23,10 +24,19 @@ var server = http.createServer(app)
 const io = require("socket.io")(server)
 
 //Configuration socket.io
-io.on("connection", (client) => {
+var clients = {}
+
+io.on("connection", (socket) => {
   console.log("a user connected")
-  client.on("disconnect", () => {
-    console.log("user disconnected")
+
+  socket.on("signin", (id) => {
+    clients[id] = socket
+  })
+
+  socket.on("message", (msg) => {
+    let targetId = msg.targetId
+    let senderId = msg.sender_id
+    clients[senderId].emit("message", "Masokmaso")
   })
 })
 
