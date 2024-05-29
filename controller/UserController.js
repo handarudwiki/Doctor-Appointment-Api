@@ -202,72 +202,42 @@ const detailUser = async (req, res) => {
   }
 }
 
-const updatePassword=  async (req, res)=>{
-    try {
-        const schema = {
-            password: "string|empty:false",
-          }
-        
-          const validated = v.validate(req.body, schema)
-
-          if (validated.length) {
-            return res.status(400).json({
-              status: "error",
-              message: validated,
-            })
-          }
-        const user = await User.findByPk(req.user)
-        if (!user) {
-            return res.status(404).json({
-                status : 'error',
-                message : 'User not found'
-            })
-        }
-        hashedPassword = await bcrypt.hash(req.body.password,10)
-        await user.update({
-            password : hashedPassword,
-        })
-        console.log(user)
-        return res.status(200).json({
-            status : 'success',
-            message : "updated password successfully" 
-        })
-    } catch (error) {
-        return res.status(500).json({
-            status : "error",
-            message : error.message
-        })
+const updatePassword = async (req, res) => {
+  try {
+    const schema = {
+      password: "string|empty:false",
     }
+
+    const validated = v.validate(req.body, schema)
+
+    if (validated.length) {
+      return res.status(400).json({
+        status: "error",
+        message: validated,
+      })
+    }
+    const user = await User.findByPk(req.user)
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      })
+    }
+    hashedPassword = await bcrypt.hash(req.body.password, 10)
+    await user.update({
+      password: hashedPassword,
+    })
+    console.log(user)
+    return res.status(200).json({
+      status: "success",
+      message: "updated password successfully",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    })
+  }
 }
 
-
-const updatePassword=  async (req, res)=>{
-    try {
-        const user = await User.findByPk(req.user)
-        if (!user) {
-            return res.status(404).json({
-                status : 'error',
-                message : 'User not found'
-            })
-        }
-
-        console.log(user)
-        console.log(req.body.password)
-        hashedPassword = await bcrypt.hash(req.body.password,10)
-        await user.update({
-            password : hashedPassword,
-        })
-        console.log(user)
-        return res.status(200).json({
-            status : 'success',
-            message : "updated password successfully" 
-        })
-    } catch (error) {
-        return res.status(500).json({
-            status : "error",
-            message : error.message
-        })
-    }
-}
-
-module.exports = {register, login, update, detailUser, updatePassword}
+module.exports = { register, login, update, detailUser, updatePassword }
