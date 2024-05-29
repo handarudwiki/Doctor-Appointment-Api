@@ -1,14 +1,12 @@
 const { PrismaClient } = require("@prisma/client")
-const { tr } = require("date-fns/locale")
 const prisma = new PrismaClient()
 
 const ChatController = {
   getChat: async (req, res) => {
-    const { id } = req.params
     try {
       const chat = await prisma.chat.findMany({
         where: {
-          OR: [{ doctor_id: parseInt(id) }, { patient_id: parseInt(id) }],
+          OR: [{ doctor_id: req.user }, { patient_id: req.user }],
         },
         include: {
           patient: true,
