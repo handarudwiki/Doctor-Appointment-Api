@@ -10,22 +10,50 @@ const AppointmentController = {
           patient_id: parseInt(id),
         },
         include: {
-          doctor: true,
+          doctor: {
+            include: {
+              user: true,
+              rating: true,
+            },
+          },
           patient: true,
         },
       })
-      if (apppointment.length === 0) {
-        res.status(404).json({
+
+      if (apppointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
         })
       }
+      const formattedAppointments = apppointment.map((appointment) => ({
+        ...appointment,
+        date: `${
+          appointment.date.getDate() < 10
+            ? "0" + appointment.date.getDate()
+            : appointment.date.getDate()
+        }-${
+          appointment.date.getMonth() < 10
+            ? "0" + appointment.date.getMonth()
+            : appointment.date.getMonth()
+        }-${appointment.date.getFullYear()}`,
+        time: `${
+          appointment.time.getUTCHours() < 10
+            ? "0" + appointment.time.getUTCHours()
+            : appointment.time.getUTCHours()
+        }:${
+          appointment.time.getUTCMinutes() < 10
+            ? "0" + appointment.time.getUTCMinutes()
+            : appointment.time.getUTCMinutes()
+        }`,
+      }))
+
       res.status(200).json({
         message: "Get appointment patient succesfully",
-        data: apppointment,
+        data: formattedAppointments,
       })
     } catch (error) {
-      req.status(500).json({
+      res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })
@@ -40,19 +68,48 @@ const AppointmentController = {
           doctor_id: parseInt(id),
         },
         include: {
-          doctor: true,
+          doctor: {
+            include: {
+              user: true,
+              rating: true,
+            },
+          },
           patient: true,
         },
       })
-      if (appointment.length === 0) {
-        res.status(404).json({
+
+      if (appointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
           data: [],
         })
       }
+
+      const formattedAppointments = appointment.map((appointment) => ({
+        ...appointment,
+        date: `${
+          appointment.date.getDate() < 10
+            ? "0" + appointment.date.getDate()
+            : appointment.date.getDate()
+        }-${
+          appointment.date.getMonth() < 10
+            ? "0" + appointment.date.getMonth()
+            : appointment.date.getMonth()
+        }-${appointment.date.getFullYear()}`,
+        time: `${
+          appointment.time.getUTCHours() < 10
+            ? "0" + appointment.time.getUTCHours()
+            : appointment.time.getUTCHours()
+        }:${
+          appointment.time.getUTCMinutes() < 10
+            ? "0" + appointment.time.getUTCMinutes()
+            : appointment.time.getUTCMinutes()
+        }`,
+      }))
+
       res.status(200).json({
         message: "Get appointment doctor succesfully",
-        data: appointment,
+        data: formattedAppointments,
       })
     } catch (error) {
       res.status(500).json({
@@ -75,8 +132,8 @@ const AppointmentController = {
         },
       })
 
-      if (appointment == null) {
-        res.status(404).json({
+      if (appointment.length == 0) {
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
         })
       }
@@ -95,17 +152,25 @@ const AppointmentController = {
 
   addAppointment: async (req, res) => {
     try {
-      const appointment = await prisma.appointment.create({
-        data: {
-          patient_id: parseInt(req.body.patient_id),
-          doctor_id: parseInt(req.body.doctor_id),
-          date: new Date(req.body.date),
-          time: new Date(req.body.time),
-        },
-      })
+      const patientId = parseInt(req.body.patient_id)
+      const doctorId = parseInt(req.body.doctor_id)
+      const date = req.body.date
+      const time = req.body.time
+
+      const appointment = await prisma.$queryRaw`
+      INSERT INTO appointments (patient_id, doctor_id, date, time, updated_at)
+      VALUES (${patientId}, ${doctorId}, STR_TO_DATE(${date}, '%d-%m-%Y'), STR_TO_DATE(${time},'%H:%i:%s'), SYSDATE())
+    `
+
       res.status(201).json({
         message: "Add appointment succesfully",
-        data: appointment,
+        data: {
+          patient_id: patientId,
+          doctor_id: doctorId,
+          date: date,
+          time: time,
+          status: "on going",
+        },
       })
     } catch (error) {
       res.status(500).json({

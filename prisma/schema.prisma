@@ -36,13 +36,13 @@ model User {
   password     String
   role         Role          @default(patient)
   no_hp        String        @unique
-  gender Gender
-  age Int
+  gender       Gender
+  age          Int
   Doctor       Doctor?
   appointments Appointment[]
   chat         Chat[]
   ChatMessage  ChatMessage[]
-  rating Rating[]
+  rating       Rating[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
 
@@ -61,7 +61,7 @@ model Doctor {
   // rating Rating[] --> On going
   appointments  Appointment[]
   chat          Chat[]
-  rating  Rating[]
+  rating        Rating[]
   user          User          @relation(fields: [user_id], references: [id])
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
@@ -100,6 +100,7 @@ model ChatMessage {
   chat_id    Int
   sender_id  Int
   message    String
+  isRead     Boolean  @default(false)
   chat       Chat     @relation(fields: [chat_id], references: [id])
   sender     User     @relation(fields: [sender_id], references: [id])
   created_at DateTime @default(now())
@@ -109,13 +110,14 @@ model ChatMessage {
 }
 
 model Rating {
-  id Int @id @default(autoincrement())
-  user_id Int
-  doctor_id Int
-  rating Int
-  doctor Doctor @relation(fields: [doctor_id], references: [id])
-  user User @relation(fields: [user_id], references: [id])
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  doctor_id  Int
+  rating     Int
+  doctor     Doctor   @relation(fields: [doctor_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
   @@map("ratings")
 }
