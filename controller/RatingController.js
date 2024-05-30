@@ -1,45 +1,49 @@
 const { where } = require("sequelize");
 const { Rating } = require("../models");
-const validator = require('fastest-validator')
-const v = new validator()
+const { PrismaClient } = require("@prisma/client")
+const prisma = new PrismaClient()
 
-const createRating = async (req, res)=>{
+const Validator = require('fastest-validator');
+
+const validator = new Validator();
+
+const createRating = async (req, res) => {
     try {
         const schema = {
-            rating : 'number|empty:false',
-            doctor_id : 'number|empty:false',
-        }
+            rating: { type: 'number', positive: true, integer: true, min: 1, max: 5 },
+            doctor_id: { type: 'number', positive: true, integer: true },
+        };
 
-        const validated =  v.validate(req.body, schema)
-
-        if(validated.length){
+        const check = validator.compile(schema);
+        const validationResult = check(req.body);
+        
+        if (validationResult !== true) {
             return res.status(400).json({
-                status : 'error',
-                message : validated
-            })
+                status: 'error',
+                message: validationResult,
+            });
         }
 
-        const {doctor_id, rating} = req.body;
+        const { doctor_id, rating } = req.body;
 
-        console.log(doctor_id)
-        console.log("1")
         const savedRating = await Rating.create({
-            doctor_id:doctor_id,
+            doctor_id: doctor_id,
             rating: rating,
-            user_id : req.user
-        })
+            user_id: req.user,
+        });
 
         return res.status(200).json({
-            status : 'success',
-            data : savedRating
-        })
+            status: 'success',
+            data: savedRating,
+        });
     } catch (error) {
         return res.status(500).json({
-            status : 'error',
-            message : error.message
-        })
+            status: 'error',
+            message: error.message,
+        });
     }
-}
+};
+
 
 const getRating = async (req, res)=>{
     try {
@@ -68,7 +72,35 @@ const getRating = async (req, res)=>{
     }
 }
 
+const getAllRating = async (req, res) =>{
+    try {
+        const doctorId = parseInt(req.params.doctorId)
+
+        // return res.json(doctorId)
+        const ratings = await prisma.rating.findMany({
+            where: {
+                doctor_id : doctorId
+            },
+            include:{
+                user:true,
+                doctor:true
+            }
+        })
+
+        return res.status(200).json({
+            status : 'success',
+            data : ratings
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status : 'error',
+            message : error.message
+        })
+    }
+}
+
 module.exports = {
     createRating,
-    getRating
+    getRating,
+    getAllRating
 }

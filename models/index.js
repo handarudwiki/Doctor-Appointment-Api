@@ -57,6 +57,11 @@ db.User.hasMany(db.Rating,{
   sourceKey :'id'
 })
 
+db.Rating.belongsTo(db.User,{
+  foreignKey : 'user_id',
+  as : 'user',
+  targetKey : 'id'
+})
 
 db.User.hasOne(db.Doctor,{
   foreignKey : 'user_id',
