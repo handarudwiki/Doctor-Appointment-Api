@@ -42,7 +42,6 @@ model User {
   appointments Appointment[]
   chat         Chat[]
   ChatMessage  ChatMessage[]
-  rating       Rating[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
 
@@ -58,10 +57,10 @@ model Doctor {
   photo_profile String
   experience    String
   user_id       Int           @unique
+  rating Rating[]
   // rating Rating[] --> On going
   appointments  Appointment[]
   chat          Chat[]
-  rating        Rating[]
   user          User          @relation(fields: [user_id], references: [id])
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
@@ -75,6 +74,7 @@ model Appointment {
   time       DateTime @db.Time()
   patient_id Int
   doctor_id  Int
+  rating Rating?
   status     Status   @default(ongoing)
   patient    User     @relation(fields: [patient_id], references: [id])
   doctor     Doctor   @relation(fields: [doctor_id], references: [id])
@@ -110,11 +110,11 @@ model ChatMessage {
 
 model Rating {
   id         Int      @id @default(autoincrement())
-  user_id    Int
-  doctor_id  Int
+  appointment_id Int @unique
+  doctor_id Int
   rating     Int
-  doctor     Doctor   @relation(fields: [doctor_id], references: [id])
-  user       User     @relation(fields: [user_id], references: [id])
+  doctor Doctor @relation(fields: [doctor_id], references: [id])
+  appointment Appointment @relation(fields: [appointment_id], references: [id]) 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
