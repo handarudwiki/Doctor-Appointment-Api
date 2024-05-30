@@ -34,9 +34,11 @@ io.on("connection", (socket) => {
   })
 
   socket.on("message", (msg) => {
-    let targetId = msg.targetId
+    let targetId = msg.receiver_id
     let senderId = msg.sender_id
-    clients[senderId].emit("message", "Masokmaso")
+    if (clients[targetId] != undefined) {
+      clients[targetId].emit("message", msg)
+    }
   })
 })
 

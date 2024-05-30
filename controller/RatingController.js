@@ -1,5 +1,7 @@
 const { where } = require("sequelize");
 const { Rating } = require("../models");
+const { PrismaClient } = require("@prisma/client")
+const prisma = new PrismaClient()
 
 const Validator = require('fastest-validator');
 
@@ -70,7 +72,35 @@ const getRating = async (req, res)=>{
     }
 }
 
+const getAllRating = async (req, res) =>{
+    try {
+        const doctorId = parseInt(req.params.doctorId)
+
+        // return res.json(doctorId)
+        const ratings = await prisma.rating.findMany({
+            where: {
+                doctor_id : doctorId
+            },
+            include:{
+                user:true,
+                doctor:true
+            }
+        })
+
+        return res.status(200).json({
+            status : 'success',
+            data : ratings
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status : 'error',
+            message : error.message
+        })
+    }
+}
+
 module.exports = {
     createRating,
-    getRating
+    getRating,
+    getAllRating
 }

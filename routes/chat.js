@@ -1,10 +1,11 @@
 const express = require("express")
 const router = express.Router()
 const chatController = require("../controller/ChatController")
-const { verifyToken } = require("../middleware/verifyToken")
+const { verifyToken, veryfiPasien } = require("../middleware/verifyToken")
 
 router.get("/", verifyToken, chatController.getChat)
-router.post("/new", verifyToken, chatController.newChat)
-router.post("/add", verifyToken, chatController.addChat)
+router.post("/add", veryfiPasien, chatController.addChat)
+router.get("/detail/:doctor_id", veryfiPasien, chatController.getDetailChat)
+router.get("/message/:chat_id", verifyToken, chatController.getMessage)
 
 module.exports = router
