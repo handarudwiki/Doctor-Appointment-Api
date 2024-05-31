@@ -92,7 +92,7 @@ const getDoctorById = async (req, res) => {
 
 const getDoctorByCategory = async (req, res) => {
   try {
-    console.log('trash')
+    console.log("trash")
     const category = req.params.category.toLowerCase()
     const doctors = await prisma.doctor.findMany({
       where: { categori: category },

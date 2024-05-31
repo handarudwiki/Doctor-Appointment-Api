@@ -1,55 +1,53 @@
-const { DataTypes } = require('sequelize');
-const User = require('./user');
+const { DataTypes } = require("sequelize")
+const User = require("./user")
 
 module.exports = (sequelize, DataTypes) => {
-   const Doctor = sequelize.define('Doctor',{
-    id : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        autoIncrement : true,
-        primaryKey : true,
-        allowNull : false,
+  const Doctor = sequelize.define(
+    "Doctor",
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
+      categori: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      hospital_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      photo_profile: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      experience: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: "updated_at",
+      },
     },
-    categori : {
-        type : DataTypes.STRING,
-        allowNull : false,
-    },
-    price : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-    },
-    hospital_name : {
-        type : DataTypes.STRING,
-        allowNull : false,
-    },
-    photo_profile : {
-        type : DataTypes.STRING,
-        allowNull : false,
-    },
-    experience : {
-        type : DataTypes.STRING,
-        allowNull : false,
-    },
-    user_id : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-    },
-    createdAt : {
-        type : DataTypes.DATE,
-        allowNull : false,
-        field : 'created_at'
-    },
-    updatedAt : {
-        type : DataTypes.DATE,
-        allowNull : false,
-        field : 'updated_at'
-    },
-   },
-   {
-    sequelize,
-    tableName : 'doctors',
-    timestamps : true
-   }
-)
-    return Doctor;
+    {
+      sequelize,
+      tableName: "doctors",
+      timestamps: true,
+    }
+  )
+  return Doctor
 }
