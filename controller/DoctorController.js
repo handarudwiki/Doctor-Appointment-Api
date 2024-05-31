@@ -55,7 +55,15 @@ const getDoctorById = async (req, res) => {
     const doctor = await prisma.doctor.findUnique({
       where: { id: id },
       include: {
-        rating: true,
+        rating: {
+          include: {
+            appointment: {
+              include: {
+                patient: true,
+              },
+            },
+          },
+        },
         user: true,
         appointments: true,
       },

@@ -57,7 +57,6 @@ model Doctor {
   photo_profile String
   experience    String
   rating        Rating[]
-  // rating Rating[] --> On going
   appointments  Appointment[]
   chat          Chat[]
   user          User          @relation(fields: [id], references: [id])
