@@ -49,19 +49,18 @@ model User {
 }
 
 model Doctor {
-  id            Int           @id @default(autoincrement())
+  id            Int           @unique
   categori      String
   description   String
   price         Int
   hospital_name String
   photo_profile String
   experience    String
-  user_id       Int           @unique
   rating        Rating[]
   // rating Rating[] --> On going
   appointments  Appointment[]
   chat          Chat[]
-  user          User          @relation(fields: [user_id], references: [id])
+  user          User          @relation(fields: [id], references: [id])
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
 
@@ -77,7 +76,7 @@ model Appointment {
   rating     Rating?
   status     Status   @default(ongoing)
   patient    User     @relation(fields: [patient_id], references: [id])
-  doctor     Doctor   @relation(fields: [doctor_id], references: [user_id])
+  doctor     Doctor   @relation(fields: [doctor_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -89,7 +88,7 @@ model Chat {
   patient_id Int
   doctor_id  Int
   patient    User          @relation(fields: [patient_id], references: [id])
-  doctor     Doctor        @relation(fields: [doctor_id], references: [user_id])
+  doctor     Doctor        @relation(fields: [doctor_id], references: [id])
   chat       ChatMessage[]
 
   @@map("chats")

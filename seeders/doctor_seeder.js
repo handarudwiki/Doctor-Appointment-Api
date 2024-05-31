@@ -20,11 +20,10 @@ const main = async () => {
     "bedah",
   ]
 
-  
-  for (let i = 0; i < 5; i++) {
-    console.log(doctor[i].id)
+  for (let i = 0; i < 20; i++) {
     await prisma.doctor.create({
       data: {
+        id: doctor[i].id,
         categori: spesialis[Math.floor(Math.random() * (spesialis.length - 1))],
         description: faker.lorem.sentence(5),
         price: parseInt(
@@ -33,7 +32,6 @@ const main = async () => {
         hospital_name: `RS ${fakerID_ID.location.city()}`,
         photo_profile: "https://source.unsplash.com/random/?doctor",
         experience: `${Math.floor(Math.random() * 20)} tahun`,
-        user_id: doctor[i].id,
         created_at: new Date(),
         updated_at: new Date(),
       },

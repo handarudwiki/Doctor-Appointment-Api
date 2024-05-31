@@ -6,6 +6,8 @@ CREATE TABLE `users` (
     `password` VARCHAR(191) NOT NULL,
     `role` ENUM('doctor', 'patient') NOT NULL DEFAULT 'patient',
     `no_hp` VARCHAR(191) NOT NULL,
+    `gender` ENUM('pria', 'wanita') NOT NULL,
+    `age` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -16,19 +18,17 @@ CREATE TABLE `users` (
 
 -- CreateTable
 CREATE TABLE `doctors` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL,
     `categori` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `price` INTEGER NOT NULL,
     `hospital_name` VARCHAR(191) NOT NULL,
     `photo_profile` VARCHAR(191) NOT NULL,
     `experience` VARCHAR(191) NOT NULL,
-    `user_id` INTEGER NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `doctors_user_id_key`(`user_id`),
-    PRIMARY KEY (`id`)
+    UNIQUE INDEX `doctors_id_key`(`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -60,14 +60,28 @@ CREATE TABLE `chat_messages` (
     `chat_id` INTEGER NOT NULL,
     `sender_id` INTEGER NOT NULL,
     `message` VARCHAR(191) NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `ratings` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `appointment_id` INTEGER NOT NULL,
+    `doctor_id` INTEGER NOT NULL,
+    `rating` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `ratings_appointment_id_key`(`appointment_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
-ALTER TABLE `doctors` ADD CONSTRAINT `doctors_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `doctors` ADD CONSTRAINT `doctors_id_fkey` FOREIGN KEY (`id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `appointments` ADD CONSTRAINT `appointments_patient_id_fkey` FOREIGN KEY (`patient_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -86,3 +100,9 @@ ALTER TABLE `chat_messages` ADD CONSTRAINT `chat_messages_chat_id_fkey` FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE `chat_messages` ADD CONSTRAINT `chat_messages_sender_id_fkey` FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ratings` ADD CONSTRAINT `ratings_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `doctors`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ratings` ADD CONSTRAINT `ratings_appointment_id_fkey` FOREIGN KEY (`appointment_id`) REFERENCES `appointments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
