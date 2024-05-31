@@ -250,9 +250,21 @@ const AppointmentController = {
         })
       }
 
+      const finalResponse = response.map((appointment) => ({
+        time: `${
+          appointment.time.getUTCHours() < 10
+            ? "0" + appointment.time.getUTCHours()
+            : appointment.time.getUTCHours()
+        }:${
+          appointment.time.getUTCMinutes() < 10
+            ? "0" + appointment.time.getUTCMinutes()
+            : appointment.time.getUTCMinutes()
+        }`,
+      }))
+
       res.status(200).json({
         message: "Get  appointment succesfully",
-        data: response,
+        data: finalResponse,
       })
     } catch (error) {
       return res.status(500).json({
