@@ -20,7 +20,9 @@ const main = async () => {
     "bedah",
   ]
 
-  for (let i = 5; i < 10; i++) {
+  
+  for (let i = 0; i < 5; i++) {
+    console.log(doctor[i].id)
     await prisma.doctor.create({
       data: {
         categori: spesialis[Math.floor(Math.random() * (spesialis.length - 1))],
