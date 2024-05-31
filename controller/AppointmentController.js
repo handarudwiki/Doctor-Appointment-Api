@@ -52,7 +52,7 @@ const AppointmentController = {
         data: formattedAppointments,
       })
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })
@@ -111,7 +111,7 @@ const AppointmentController = {
         data: formattedAppointments,
       })
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })
@@ -142,7 +142,7 @@ const AppointmentController = {
         data: appointment,
       })
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Terjadi kesalahan error",
         erorr: error.message,
       })
@@ -172,7 +172,7 @@ const AppointmentController = {
         },
       })
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })
@@ -189,7 +189,7 @@ const AppointmentController = {
       })
 
       if (checkAppointment == null) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Data appointment tidak ditemukan",
         })
       }
@@ -212,7 +212,50 @@ const AppointmentController = {
         data: appointment,
       })
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
+        message: "Terjadi kesalahan error",
+        error: error.message,
+      })
+    }
+  },
+
+  getClockAppointment: async (req, res) => {
+    try {
+      const { doctor_id } = req.params
+      const { date } = req.body
+
+      const parsedDate = new Date(date)
+      const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0))
+      const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999))
+
+      const response = await prisma.appointment.findMany({
+        where: {
+          AND: [
+            {
+              doctor_id: parseInt(doctor_id),
+            },
+            {
+              date: {
+                gte: startOfDay,
+                lte: endOfDay,
+              },
+            },
+          ],
+        },
+      })
+
+      if (response.length == 0) {
+        return res.status(404).json({
+          message: "Data appointment tidak ditemukan",
+        })
+      }
+
+      res.status(200).json({
+        message: "Get  appointment succesfully",
+        data: response,
+      })
+    } catch (error) {
+      return res.status(500).json({
         message: "Terjadi kesalahan error",
         error: error.message,
       })

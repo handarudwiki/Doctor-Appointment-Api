@@ -10,5 +10,10 @@ router
   .get(verifyToken, AppointmentController.getDetailAppointmet)
   .put(verifyToken, AppointmentController.updateAppointment)
 router.route("/").post(verifyToken, AppointmentController.addAppointment)
+router.get(
+  "/clock/:doctor_id",
+  verifyToken,
+  AppointmentController.getClockAppointment
+)
 
 module.exports = router
