@@ -131,8 +131,8 @@ const update = async (req, res) => {
       name: "string|empty:false",
       email: "email|empty:false",
       no_hp: "string|empty:false",
-      password: "string|optional",
       age: "number|optional",
+      gender: "string|optional",
     }
 
     const validated = v.validate(req.body, schema)
@@ -153,19 +153,31 @@ const update = async (req, res) => {
       if (checkEmail) {
         return res.status(409).json({
           status: "error",
-          message: "Email already exists",
+          message: "Email ini sudah terdaftar",
         })
       }
     }
 
-    // return res.json(req.user)
+    const phone = req.body.no_hp
+    if (phone && phone !== user.no_hp) {
+      const checkPhone = await User.findOne({
+        where: { no_hp: phone },
+      })
+
+      if (checkPhone) {
+        return res.status(409).json({
+          status: "error",
+          message: "No hp ini sudah terdaftar",
+        })
+      }
+    }
 
     const updatedUser = await user.update({
       email: req.body.email,
-      password: req.body.password,
       no_hp: req.body.no_hp,
       name: req.body.name,
       age: req.body.age,
+      gender: req.body.gender,
     })
 
     return res.status(200).json({
