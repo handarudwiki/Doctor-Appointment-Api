@@ -117,14 +117,14 @@ const login = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const id = req.user;
-    const user = await User.findByPk(id);
+    const id = req.user
+    const user = await User.findByPk(id)
 
     if (!user) {
       return res.status(404).json({
         status: "error",
         message: "User not found",
-      });
+      })
     }
 
     const schema = {
@@ -133,42 +133,40 @@ const update = async (req, res) => {
       no_hp: "string|empty:false",
       password: "string|optional",
       age: "number|optional",
-    };
+    }
 
-    const validated = v.validate(req.body, schema);
+    const validated = v.validate(req.body, schema)
 
     if (validated.length) {
       return res.status(400).json({
         status: "error",
         message: validated,
-      });
+      })
     }
 
-   
-    const email = req.body.email;
+    const email = req.body.email
     if (email && email !== user.email) {
       const checkEmail = await User.findOne({
         where: { email: email },
-      });
+      })
 
       if (checkEmail) {
         return res.status(409).json({
           status: "error",
           message: "Email already exists",
-        });
+        })
       }
     }
 
     // return res.json(req.user)
-    
+
     const updatedUser = await user.update({
       email: req.body.email,
       password: req.body.password,
       no_hp: req.body.no_hp,
       name: req.body.name,
       age: req.body.age,
-    });
-
+    })
 
     return res.status(200).json({
       status: "success",
@@ -179,15 +177,14 @@ const update = async (req, res) => {
         name: updatedUser.name,
         age: updatedUser.age,
       },
-    });
+    })
   } catch (error) {
     return res.status(500).json({
       status: "error",
       message: error.message,
-    });
+    })
   }
-};
-
+}
 
 const detailUser = async (req, res) => {
   try {
@@ -214,6 +211,7 @@ const detailUser = async (req, res) => {
 const updatePassword = async (req, res) => {
   try {
     const schema = {
+      last_password: "string|empty:false",
       password: "string|empty:false",
     }
 
@@ -226,17 +224,32 @@ const updatePassword = async (req, res) => {
       })
     }
     const user = await User.findByPk(req.user)
+
     if (!user) {
       return res.status(404).json({
         status: "error",
         message: "User not found",
       })
     }
+
+    const isPasswordValid = await bcrypt.compare(
+      req.body.last_password,
+      user.password
+    )
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        status: "error",
+        message: "Password lama yang anda masukkan salah",
+      })
+    }
+
     hashedPassword = await bcrypt.hash(req.body.password, 10)
+
     await user.update({
       password: hashedPassword,
     })
-    console.log(user)
+
     return res.status(200).json({
       status: "success",
       message: "updated password successfully",
