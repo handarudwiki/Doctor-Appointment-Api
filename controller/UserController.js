@@ -182,13 +182,7 @@ const update = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      data: {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        no_hp: updatedUser.no_hp,
-        name: updatedUser.name,
-        age: updatedUser.age,
-      },
+      data: updatedUser,
     })
   } catch (error) {
     return res.status(500).json({
