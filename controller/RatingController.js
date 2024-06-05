@@ -138,8 +138,32 @@ const getAllRating = async (req, res) => {
   }
 }
 
+const checkRating = async (req, res) => {
+  try {
+    const appointmentId = parseInt(req.params.appointmentId)
+
+    const rating = await prisma.rating.findFirst({
+      where: {
+        appointment_id: appointmentId,
+      },
+    })
+
+    if (rating == null) {
+      return res.status(200).json(false)
+    }
+
+    return res.status(200).json(true)
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    })
+  }
+}
+
 module.exports = {
   createRating,
   getRating,
   getAllRating,
+  checkRating,
 }
