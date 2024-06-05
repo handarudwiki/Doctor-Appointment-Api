@@ -199,10 +199,10 @@ const AppointmentController = {
           id: parseInt(id),
         },
         data: {
-          patient_id: parseInt(req.body.patient_id),
-          doctor_id: parseInt(req.body.doctor_id),
-          date: new Date(req.body.date),
-          time: new Date(req.body.time),
+          patient_id: checkAppointment.patient_id,
+          doctor_id: checkAppointment.doctor_id,
+          date: checkAppointment.date,
+          time: checkAppointment.time,
           status: req.body.status,
         },
       })
@@ -233,6 +233,9 @@ const AppointmentController = {
           AND: [
             {
               doctor_id: parseInt(doctor_id),
+            },
+            {
+              status: "ongoing",
             },
             {
               date: {

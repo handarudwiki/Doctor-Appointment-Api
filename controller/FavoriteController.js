@@ -106,10 +106,10 @@ const FavoriteController = {
 
   deleteFavorite: async (req, res) => {
     try {
-      const id = parseInt(req.params.id)
-      const response = await prisma.favorite.delete({
+      const doctorId = parseInt(req.body.doctor_id)
+      const response = await prisma.favorite.deleteMany({
         where: {
-          id: id,
+          AND: [{ patient_id: req.user }, { doctor_id: doctorId }],
         },
       })
 
