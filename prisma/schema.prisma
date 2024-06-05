@@ -44,6 +44,7 @@ model User {
   ChatMessage  ChatMessage[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
+  Favorite     Favorite[]
 
   @@map("users")
 }
@@ -62,6 +63,7 @@ model Doctor {
   user          User          @relation(fields: [id], references: [id])
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
+  Favorite      Favorite[]
 
   @@map("doctors")
 }
@@ -118,4 +120,14 @@ model Rating {
   updated_at     DateTime    @updatedAt
 
   @@map("ratings")
+}
+
+model Favorite {
+  id         Int    @id @default(autoincrement())
+  patient_id Int
+  doctor_id  Int
+  patient    User   @relation(fields: [patient_id], references: [id])
+  doctor     Doctor @relation(fields: [doctor_id], references: [id])
+
+  @@map("favorites")
 }
