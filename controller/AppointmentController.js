@@ -32,9 +32,9 @@ const AppointmentController = {
             ? "0" + appointment.date.getDate()
             : appointment.date.getDate()
         }-${
-          appointment.date.getMonth() < 10
-            ? "0" + appointment.date.getMonth()
-            : appointment.date.getMonth()
+          appointment.date.getMonth() + 1 < 10
+            ? "0" + (appointment.date.getMonth() + 1)
+            : appointment.date.getMonth() + 1
         }-${appointment.date.getFullYear()}`,
         time: `${
           appointment.time.getUTCHours() < 10
@@ -91,9 +91,9 @@ const AppointmentController = {
             ? "0" + appointment.date.getDate()
             : appointment.date.getDate()
         }-${
-          appointment.date.getMonth() < 10
-            ? "0" + appointment.date.getMonth()
-            : appointment.date.getMonth()
+          appointment.date.getMonth() + 1 < 10
+            ? "0" + (appointment.date.getMonth() + 1)
+            : appointment.date.getMonth() + 1
         }-${appointment.date.getFullYear()}`,
         time: `${
           appointment.time.getUTCHours() < 10
