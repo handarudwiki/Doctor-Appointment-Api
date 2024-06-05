@@ -1,4 +1,4 @@
-const { where } = require("sequelize")
+const { where, and } = require("sequelize")
 const { User, Doctor, Rating } = require("../models")
 const { string } = require("joi")
 const { PrismaClient } = require("@prisma/client")
