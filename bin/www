@@ -30,13 +30,20 @@ io.on("connection", (socket) => {
   console.log("a user connected")
 
   socket.on("signin", (id) => {
+    console.log("user with id: " + id + " is connected")
     clients[id] = socket
   })
 
   socket.on("message", (msg) => {
     let targetId = msg.receiver_id
     let senderId = msg.sender_id
+    let message = msg.message
     if (clients[targetId] != undefined) {
+      console.log(
+        "sending message to " + targetId + "from ",
+        senderId,
+        "message: " + message
+      )
       clients[targetId].emit("message", msg)
     }
   })

@@ -6,7 +6,14 @@ const ChatController = {
     try {
       const chat = await prisma.chat.findMany({
         where: {
-          OR: [{ doctor_id: req.user }, { patient_id: req.user }],
+          AND: [
+            {
+              chat: {
+                some: {},
+              },
+            },
+            { OR: [{ doctor_id: req.user }, { patient_id: req.user }] },
+          ],
         },
         include: {
           patient: true,
@@ -116,11 +123,14 @@ const ChatController = {
 
       const chat = await prisma.chat.findFirst({
         where: {
-          AND: [{ doctor_id: receive_id }, { patient_id: req.user }],
+          OR: [
+            { AND: [{ doctor_id: receive_id }, { patient_id: req.user }] },
+            { AND: [{ doctor_id: req.user }, { patient_id: receive_id }] },
+          ],
         },
       })
 
-      if (chat.length == 0) {
+      if (chat == null) {
         const openChat = await prisma.chat.create({
           data: {
             patient_id: req.user,
@@ -135,7 +145,7 @@ const ChatController = {
           },
         })
 
-        res.status(201).json({
+        return res.status(201).json({
           message: "Chat berhasil ditambahkan",
           data: newChat,
         })
@@ -152,6 +162,29 @@ const ChatController = {
       res.status(201).json({
         message: "Chat berhasil ditambahkan",
         data: newChat,
+      })
+    } catch (error) {
+      return res.status(500).json({
+        message: "Terjadi kesalahan error",
+        error: error.message,
+      })
+    }
+  },
+
+  openChat: async (req, res) => {
+    try {
+      const { receive_id } = req.body
+
+      const openChat = await prisma.chat.create({
+        data: {
+          patient_id: req.user,
+          doctor_id: parseInt(receive_id),
+        },
+      })
+
+      return res.status(201).json({
+        message: "Chat berhasil dibuat",
+        data: openChat,
       })
     } catch (error) {
       return res.status(500).json({
