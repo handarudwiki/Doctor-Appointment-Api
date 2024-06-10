@@ -156,6 +156,20 @@ const AppointmentController = {
       const date = req.body.date
       const time = req.body.time
 
+
+      const dataAppointment = await  prisma.appointment.findMany({
+        where: {
+          status: 'ongoing',
+        }
+      })
+
+      if(dataAppointment.length >=2) {
+        return res.status(400).json({
+          message: "error",
+          error: "Anda sudah memiliki 2 appointment yang sedang berlangsung, silahkan cancel appointment yang sedang berlangsung terlebih dahulu"
+        })
+      }
+
       const appointment = await prisma.$queryRaw`
       INSERT INTO appointments (patient_id, doctor_id, date, time, updated_at)
       VALUES (${patientId}, ${doctorId}, STR_TO_DATE(${date}, '%d-%m-%Y'), STR_TO_DATE(${time},'%H:%i:%s'), SYSDATE())

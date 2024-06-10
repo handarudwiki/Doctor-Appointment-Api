@@ -34,8 +34,21 @@ const ChatController = {
         })
       }
 
+      chat.forEach((element) => {
+        count = 0
+        element.chat.forEach((item) => {
+          if (item.sender_id != req.user && item.isRead === false) {
+            count++
+          }
+        })
+        element.chatCount = count
+      })
+
+      allChatCount = chat.reduce((acc, val) => acc + val.chatCount, 0)
+
       res.status(200).json({
         message: "Get chat user succesfully",
+        allChatCount,
         data: chat,
       })
     } catch (error) {
@@ -77,6 +90,32 @@ const ChatController = {
       res.status(200).json({
         message: "Get chat user succesfully",
         data: chat,
+      })
+    } catch (error) {
+      return res.status(500).json({
+        message: "Terjadi kesalahan error",
+        error: error.message,
+      })
+    }
+  },
+
+  readChat: async (req, res) => { 
+    try {
+      await prisma.chatMessage.updateMany({
+        where: {
+          AND: [
+            { chat_id: parseInt(req.params.chat_id) },
+            { sender_id: { not: req.user } },
+          ]
+        },
+        data: {
+          isRead: true,
+        },
+      })
+
+
+      return res.status(200).json({
+        message: "Chat berhasil dibaca",
       })
     } catch (error) {
       return res.status(500).json({
