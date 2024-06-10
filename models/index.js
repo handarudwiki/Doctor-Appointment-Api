@@ -52,7 +52,7 @@ db.sequelize = sequelize
 db.Sequelize = Sequelize
 
 db.Doctor = require("./Doctor")(sequelize, Sequelize)
-db.User = require("./user.js")(sequelize, Sequelize)
+db.User = require("./User.js")(sequelize, Sequelize)
 db.Rating = require("./Rating.js")(sequelize, Sequelize)
 
 db.User.hasMany(db.Rating, {
