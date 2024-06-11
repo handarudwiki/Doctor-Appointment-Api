@@ -159,7 +159,10 @@ const AppointmentController = {
 
       const dataAppointment = await  prisma.appointment.findMany({
         where: {
-          status: 'ongoing',
+          AND: [
+            {status: 'ongoing',},
+            {patient_id: patientId},
+          ]
         }
       })
 
